@@ -1,0 +1,235 @@
+:root {
+  --primary-color: #F89344;
+  --secondary-color: #FF642F;
+  --bg-700: #393A3A;
+  --bg-500: #575959;
+  --bg-300: #F4F4F4;
+  --text-color: #333333;
+  --white: #FFFFFF;
+}
+
+body {
+  font-family: 'Arial', sans-serif;
+  background-color: var(--bg-300);
+  color: var(--text-color);
+  line-height: 1.6;
+  margin: 0;
+  padding: 0;
+}
+
+.container {
+  max-width: 1200px;
+  margin: 0 auto;
+  padding: 2rem;
+}
+
+h1, h2, h3 {
+  color: var(--bg-700);
+}
+
+input, button, select {
+  width: 100%;
+  padding: 0.75rem;
+  margin-bottom: 1rem;
+  border: 1px solid #ddd;
+  border-radius: 5px;
+  font-size: 1rem;
+}
+
+input, select {
+  background-color: var(--white);
+  color: var(--text-color);
+}
+
+button, .button {
+  background-color: var(--primary-color);
+  color: var(--white);
+  cursor: pointer;
+  transition: background-color 0.3s ease;
+  text-align: center;
+  text-decoration: none;
+  display: inline-block;
+  font-weight: bold;
+}
+
+button:hover, .button:hover {
+  background-color: var(--secondary-color);
+}
+
+#loginForm, #logoutSection, #pollCreation {
+  background-color: var(--white);
+  border-radius: 10px;
+  padding: 2rem;
+  margin-bottom: 2rem;
+  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+}
+
+#pollList {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+  gap: 2rem;
+}
+
+.poll {
+  background-color: var(--white);
+  border-radius: 10px;
+  padding: 1.5rem;
+  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+  transition: transform 0.3s ease;
+}
+
+.poll:hover {
+  transform: translateY(-5px);
+}
+
+.poll-options {
+  display: flex;
+  flex-direction: row;
+  flex-wrap: wrap;
+  gap: 1rem;
+  margin-top: 1rem;
+  overflow-x: auto;
+  padding-bottom: 10px;
+}
+
+.poll-option {
+  background-color: var(--bg-300);
+  border-radius: 5px;
+  padding: 0.5rem;
+  text-align: center;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  min-width: 100px;
+  flex: 1 0 auto;
+}
+
+.poll-option img {
+  max-width: 60px;
+  height: auto;
+  border-radius: 5px;
+  margin-bottom: 0.5rem;
+}
+
+.poll-option-content {
+  margin-bottom: 0.5rem;
+}
+
+.poll-option button {
+  padding: 0.5rem;
+  width: 100%;
+  min-width: 60px;
+  font-size: 0.9rem;
+}
+
+.poll-description {
+  font-style: italic;
+  color: var(--bg-500);
+  margin-bottom: 1rem;
+}
+
+@media (max-width: 768px) {
+  .container {
+    padding: 1rem;
+  }
+
+  #pollList {
+    grid-template-columns: 1fr;
+  }
+
+  .poll-option {
+    flex-direction: column;
+    align-items: flex-start;
+  }
+
+  .poll-option img {
+    margin-right: 0;
+    margin-bottom: 0.5rem;
+  }
+
+  .poll-option button {
+    margin-left: 0;
+    margin-top: 0.5rem;
+    width: 100%;
+  }
+
+  .poll-options {
+    flex-wrap: nowrap;
+    overflow-x: auto;
+    -webkit-overflow-scrolling: touch;
+    scroll-snap-type: x mandatory;
+  }
+
+  .poll-option {
+    scroll-snap-align: start;
+    flex: 0 0 auto;
+    width: 150px;
+  }
+}
+
+.modal {
+    display: none;
+    position: fixed;
+    z-index: 1;
+    left: 0;
+    top: 0;
+    width: 100%;
+    height: 100%;
+    overflow: auto;
+    background-color: rgba(0,0,0,0.4);
+}
+
+.modal-content {
+    background-color: #fefefe;
+    margin: 15% auto;
+    padding: 20px;
+    border: 1px solid #888;
+    width: 80%;
+    max-width: 600px;
+}
+
+.close {
+    color: #aaa;
+    float: right;
+    font-size: 28px;
+    font-weight: bold;
+    cursor: pointer;
+}
+
+.close:hover,
+.close:focus {
+    color: black;
+    text-decoration: none;
+    cursor: pointer;
+}
+
+.admin-buttons {
+    display: flex;
+    gap: 10px;
+    margin-top: 10px;
+}
+
+.admin-buttons .button {
+    flex: 1;
+    text-align: center;
+    padding: 10px;
+    background-color: #ff9933; /* Orange background */
+    color: white;
+    border: none;
+    cursor: pointer;
+    font-size: 16px;
+    text-decoration: none;
+    display: inline-block;
+}
+
+.admin-buttons .button:hover {
+    background-color: #e68a00; /* Darker orange on hover */
+}
+
+.assign-limited-admin-button {
+  background-color: #FFA500; /* Orange */
+}
+
+.assign-limited-admin-button:hover {
+  background-color: #FF8C00; /* Dark Orange */
+}

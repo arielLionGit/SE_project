@@ -1,0 +1,718 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Voting System</title>
+    <link rel="stylesheet" href="styles.css">
+    <style>
+
+        
+        .modal-content {
+            background-color: #fefefe;
+            margin: 5% auto;
+            padding: 20px;
+            border: 1px solid #888;
+            width: 80%;
+            max-width: 500px;
+            border-radius: 8px;
+        }
+
+        #userList {
+            list-style-type: none;
+            padding: 0;
+            margin: 0;
+        }
+
+        #userList li {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 10px 0;
+            border-bottom: 1px solid #ddd;
+        }
+
+        #userList li:last-child {
+            border-bottom: none;
+        }
+
+        #userList li .user-info {
+            flex-grow: 1;
+        }
+
+        #userList li button {
+            background-color: #ff9933;
+            color: white;
+            border: none;
+            padding: 5px 10px;
+            border-radius: 4px;
+            cursor: pointer;
+            font-size: 14px;
+            width: auto;
+            min-width: 70px;
+            margin-left: 10px;
+        }
+
+        #userList li button:hover {
+            background-color: #e68a00;
+        }
+
+        .expired-notice {
+            color: #ff0000;
+            font-weight: bold;
+        }
+
+        #userIcon {
+            width: 50px;
+            height: 50px;
+            border-radius: 50%;
+            object-fit: cover;
+            margin-right: 10px;
+        }
+        
+        .change-icon-button {
+            background-color: #4CAF50;
+            color: white;
+            border: none;
+            padding: 5px 10px;
+            text-align: center;
+            text-decoration: none;
+            display: inline-block;
+            font-size: 14px;
+            margin: 4px 2px;
+            cursor: pointer;
+            border-radius: 4px;
+            height: 30px;
+        }
+
+        .user-icon-container {
+            display: flex;
+            align-items: center;
+            margin-bottom: 20px;  /* Increased margin for better spacing */
+        }
+
+        #userIcon {
+            width: 100px;  /* Increased from 50px */
+            height: 100px;  /* Increased from 50px */
+            border-radius: 50%;
+            object-fit: cover;
+            margin-right: 20px;  /* Increased from 10px for better spacing */
+            border: 2px solid #626262;  /* Optional: adds a border around the icon */
+        }
+        
+        .change-icon-button {
+            background-color: #4CAF50;
+            color: white;
+            border: none;
+            padding: 10px 20px;  /* Increased padding for a larger button */
+            text-align: center;
+            text-decoration: none;
+            display: inline-block;
+            font-size: 16px;  /* Increased font size */
+            margin: 4px 2px;
+            cursor: pointer;
+            border-radius: 4px;
+            height: auto;  /* Changed from fixed height to auto */
+        }
+
+        .delete-button, .assign-admin-button, .unassign-admin-button {
+            background-color: #ff9933;
+            color: white;
+            border: none;
+            padding: 5px 10px;
+            border-radius: 4px;
+            cursor: pointer;
+            font-size: 14px;
+            margin-left: 5px;
+        }
+
+        .assign-admin-button {
+            background-color: #4CAF50;
+        }
+
+        .unassign-admin-button {
+            background-color: #f44336;
+        }
+
+        .delete-button:hover {
+            background-color: #e68a00;
+        }
+
+        .assign-admin-button:hover {
+            background-color: #45a049;
+        }
+
+        .unassign-admin-button:hover {
+            background-color: #d32f2f;
+        }
+
+        .poll-option {
+            /* ... existing styles ... */
+            transition: background-color 0.3s ease;
+        }
+
+        .poll-option.voted {
+            background-color: #e6ffe6; /* Light green color */
+        }
+
+        .assign-limited-admin-button {
+            background-color: #FFA500; /* Orange */
+        }
+
+        .assign-limited-admin-button:hover {
+            background-color: #FF8C00; /* Dark Orange */
+        }
+
+        #userListModal {
+            display: none;
+            position: fixed;
+            z-index: 1;
+            left: 0;
+            top: 0;
+            width: 100%;
+            height: 100%;
+            overflow: auto;
+            background-color: rgba(0,0,0,0.4);
+        }
+
+        .modal-content {
+            background-color: #fefefe;
+            margin: 5% auto;
+            padding: 20px;
+            border: 1px solid #888;
+            width: 80%;  /* You can adjust this value */
+            max-width: 800px;  /* Increased from 500px */
+            border-radius: 8px;
+            max-height: 80vh;  /* Limit height to 80% of viewport height */
+            overflow-y: auto;  /* Add scrollbar if content exceeds max-height */
+        }
+
+        #userList {
+            list-style-type: none;
+            padding: 0;
+            margin: 0;
+        }
+
+        #userList li {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 10px 0;
+            border-bottom: 1px solid #ddd;
+        }
+
+        #userList li:last-child {
+            border-bottom: none;
+        }
+
+        
+
+        /* ... rest of the styles ... */
+    </style>
+</head>
+<body onload="startTime()">
+    <div id="clock"></div>
+    <div class="container">
+        <h1>Voting System</h1>
+        
+        <div id="loginForm">
+            <h2>Hello</h2>
+            <h3>Welcome Back</h3>
+            <input type="text" id="username" placeholder="Username">
+            <input type="password" id="password" placeholder="Password">
+            <button onclick="login()">Login</button>
+            <a href="register.html" class="button">Register</a>
+        </div>
+
+        <div id="logoutSection" style="display: none;">
+            <div class="user-icon-container">
+                <img id="userIcon" src="" alt="User Icon">
+                <button onclick="changeUserIcon()" class="change-icon-button">Change Icon</button>
+            </div>
+            <h2>Welcome, <span id="userDisplay"></span></h2>
+            <p id="userType"></p>
+            <button onclick="logout()">Logout</button>
+            <div class="admin-buttons">
+                <button onclick="location.href='create_poll.html'" class="button">Create New Poll</button>
+                <button onclick="location.href='admin_manage_polls.html'" id="managePollsButton" class="button" style="display: none;">Manage Polls</button>
+                <button id="showUsersButton" class="button" style="display: none;" onclick="showUsersList()">Show Users List</button>
+            </div>
+        </div>
+
+        <div id="pollList" style="display: none;">
+            <h2>Existing Polls</h2>
+            <!-- Polls will be dynamically added here -->
+        </div>
+    </div>
+
+    <div id="userListModal" class="modal" style="display: none;">
+        <div class="modal-content">
+            <span class="close" onclick="closeUsersList()">&times;</span>
+            <h2>Registered Users</h2>
+            <div id="userListContent"></div>
+        </div>
+    </div>
+
+    <script>
+        function startTime() {
+            const today = new Date();
+            let h = today.getHours();
+            let m = today.getMinutes();
+            let s = today.getSeconds();
+            m = checkTime(m);
+            s = checkTime(s);
+            document.getElementById('clock').innerHTML =  h + ":" + m + ":" + s;
+            setTimeout(startTime, 1000);
+        }
+
+        function checkTime(i) {
+            if (i < 10) {i = "0" + i};  // add zero in front of numbers < 10
+            return i;
+        }
+
+        function login() {
+            const username = document.getElementById('username').value;
+            const password = document.getElementById('password').value;
+
+            // Check for preset admin account
+            if (username === 'admin' && password === 'admin') {
+                localStorage.setItem('loggedInUser', 'admin');
+                localStorage.setItem('isAdmin', 'true');
+                showLoggedInState('admin', 'admin');
+                return;
+            }
+
+            // Get users from localStorage
+            const users = JSON.parse(localStorage.getItem('users')) || {};
+
+            if (users[username] && users[username].password === password) {
+                localStorage.setItem('loggedInUser', username);
+                localStorage.setItem('isAdmin', users[username].type === 'admin' || users[username].type === 'limited_admin' ? 'true' : 'false');
+                showLoggedInState(username, users[username].type);
+            } else {
+                alert('Invalid username or password');
+            }
+        }
+
+        function logout() {
+            localStorage.removeItem('loggedInUser');
+            localStorage.removeItem('isAdmin');
+            showLoggedOutState();
+        }
+
+        function showLoggedInState(username, userType) {
+            console.log('Showing logged in state for:', username, 'Type:', userType);
+            document.getElementById('loginForm').style.display = 'none';
+            document.getElementById('logoutSection').style.display = 'block';
+            document.getElementById('pollList').style.display = 'block';
+            document.getElementById('userDisplay').textContent = username;
+            document.getElementById('userType').textContent = `Account type: ${userType}`;
+            
+            const users = JSON.parse(localStorage.getItem('users')) || {};
+            const userIcon = document.getElementById('userIcon');
+            if (username === 'admin') {
+                userIcon.src = users.admin && users.admin.icon ? users.admin.icon : 'admin-icon.png';
+            } else if (users[username] && users[username].icon) {
+                userIcon.src = users[username].icon;
+            } else {
+                userIcon.src = 'default-icon.png';
+            }
+            
+            const managePollsButton = document.getElementById('managePollsButton');
+            const showUsersButton = document.getElementById('showUsersButton');
+            if (userType === 'admin' || userType === 'limited_admin') {
+                managePollsButton.style.display = 'inline-block';
+                showUsersButton.style.display = 'inline-block';
+            } else {
+                managePollsButton.style.display = 'none';
+                showUsersButton.style.display = 'none';
+            }
+            
+            fetchAndUpdatePolls();
+            // Start auto-updating every 5 seconds
+            setInterval(fetchAndUpdatePolls, 5000);
+        }
+
+        function showLoggedOutState() {
+            document.getElementById('loginForm').style.display = 'block';
+            document.getElementById('logoutSection').style.display = 'none';
+            document.getElementById('pollList').style.display = 'none';
+        }
+
+        function fetchAndUpdatePolls() {
+            let polls = JSON.parse(localStorage.getItem('polls')) || [];
+            const currentTime = new Date().getTime();
+            const isAdmin = localStorage.getItem('isAdmin') === 'true';
+
+            if (!isAdmin) {
+                polls = polls.filter(poll => {
+                    const endTime = new Date(poll.endTime).getTime();
+                    return endTime > currentTime;
+                });
+            }
+
+            updatePollDisplay(polls, isAdmin);
+        }
+
+        function updatePollDisplay(polls, isAdmin) {
+            const pollListDiv = document.getElementById('pollList');
+            if (!pollListDiv) return;
+
+            const loggedInUser = localStorage.getItem('loggedInUser');
+            
+            pollListDiv.innerHTML = '<h2>Existing Polls</h2>';
+            
+            polls.forEach(poll => {
+                const pollDiv = document.createElement('div');
+                pollDiv.id = `poll-${poll.id}`;
+                pollDiv.className = 'poll';
+                const currentTime = new Date().getTime();
+                const endTime = new Date(poll.endTime).getTime();
+                const isExpired = endTime <= currentTime;
+
+                let optionsHtml = poll.options.map((option, index) => {
+                    const isVoted = poll.votes && poll.votes[loggedInUser] === index;
+                    const optionClass = isVoted ? 'poll-option voted' : 'poll-option';
+                    return `
+                        <div class="${optionClass}">
+                            ${option.image ? `<img src="${option.image}" alt="${option.text}">` : ''}
+                            <div class="poll-option-content">
+                                <p>${truncateText(option.text, 40)}</p>
+                                <p>Votes: <span id="votes-${poll.id}-${index}">${option.votes || 0}</span></p>
+                            </div>
+                            ${!isExpired ? `<button onclick="vote('${poll.id}', ${index})">${isVoted ? 'Voted' : 'Vote'}</button>` : ''}
+                        </div>
+                    `;
+                }).join('');
+
+                pollDiv.innerHTML = `
+                    <h3>${truncateText(poll.name, 40)}</h3>
+                    ${poll.description ? `<p class="poll-description">${poll.description}</p>` : ''}
+                    <div class="poll-options">${optionsHtml}</div>
+                    <p>Ends: ${new Date(poll.endTime).toLocaleString()}</p>
+                    ${isExpired ? '<p class="expired-notice">This poll has ended</p>' : ''}
+                `;
+
+                pollListDiv.appendChild(pollDiv);
+            });
+
+            if (polls.length === 0) {
+                pollListDiv.innerHTML += '<p>No active polls available.</p>';
+            }
+        }
+
+        // Add this new function to truncate text
+        function truncateText(text, maxLength) {
+            return text.length > maxLength ? text.substring(0, maxLength - 3) + '...' : text;
+        }
+
+        function vote(pollId, optionIndex) {
+            const loggedInUser = localStorage.getItem('loggedInUser');
+            if (!loggedInUser) {
+                alert('Please log in to vote.');
+                return;
+            }
+
+            let polls = JSON.parse(localStorage.getItem('polls')) || [];
+            const pollIndex = polls.findIndex(poll => poll.id === pollId);
+
+            if (pollIndex !== -1) {
+                if (!polls[pollIndex].votes) {
+                    polls[pollIndex].votes = {};
+                }
+
+                const previousVote = polls[pollIndex].votes[loggedInUser];
+                if (previousVote !== undefined) {
+                    polls[pollIndex].options[previousVote].votes = Math.max(0, (polls[pollIndex].options[previousVote].votes || 0) - 1);
+                }
+
+                polls[pollIndex].votes[loggedInUser] = optionIndex;
+                polls[pollIndex].options[optionIndex].votes = (polls[pollIndex].options[optionIndex].votes || 0) + 1;
+
+                localStorage.setItem('polls', JSON.stringify(polls));
+                
+                alert(previousVote !== undefined ? 'Your vote has been changed.' : 'Your vote has been recorded.');
+                fetchAndUpdatePolls(); // Update immediately after voting
+            }
+        }
+
+        function showUsersList() {
+            const users = JSON.parse(localStorage.getItem('users')) || {};
+            const currentUser = localStorage.getItem('loggedInUser');
+            const currentUserType = users[currentUser].type;
+            let userListHTML = '<ul id="userList">';
+            
+            // Separate users into admins and regular users
+            let adminUsers = [];
+            let limitedAdminUsers = [];
+            let regularUsers = [];
+            
+            for (let username in users) {
+                if (username === 'admin' || users[username].type === 'admin') {
+                    adminUsers.push(username);
+                } else if (users[username].type === 'limited_admin') {
+                    limitedAdminUsers.push(username);
+                } else {
+                    regularUsers.push(username);
+                }
+            }
+            
+            // Sort admin users alphabetically, but keep 'admin' at the top
+            adminUsers.sort((a, b) => {
+                if (a === 'admin') return -1;
+                if (b === 'admin') return 1;
+                return a.localeCompare(b);
+            });
+            
+            // Add admin users
+            adminUsers.forEach(username => {
+                const adminType = username === 'admin' ? 'Root Admin' : 'Admin';
+                userListHTML += `
+                    <li>
+                        <span class="user-info">${username} (${adminType})</span>
+                        ${username !== 'admin' && currentUserType === 'admin' ? `
+                            <button onclick="deleteUser('${username}')" class="delete-button">Delete</button>
+                            <button onclick="unassignAdmin('${username}')" class="unassign-admin-button">Unassign Admin</button>
+                        ` : ''}
+                    </li>`;
+            });
+            
+            // Add limited admin users
+            limitedAdminUsers.forEach(username => {
+                userListHTML += `
+                    <li>
+                        <span class="user-info">${username} (Limited Admin)</span>
+                        ${currentUserType === 'admin' ? `
+                            <button onclick="deleteUser('${username}')" class="delete-button">Delete</button>
+                            <button onclick="unassignAdmin('${username}')" class="unassign-admin-button">Unassign Admin</button>
+                        ` : ''}
+                    </li>`;
+            });
+            
+            // Add regular users
+            regularUsers.sort((a, b) => a.localeCompare(b));
+            regularUsers.forEach(username => {
+                userListHTML += `
+                    <li>
+                        <span class="user-info">${username} (User)</span>
+                        ${currentUserType === 'admin' ? `
+                            <button onclick="deleteUser('${username}')" class="delete-button">Delete</button>
+                            <button onclick="assignAdmin('${username}')" class="assign-admin-button">Assign Admin</button>
+                            <button onclick="assignLimitedAdmin('${username}')" class="assign-limited-admin-button">Assign Limited Admin</button>
+                        ` : ''}
+                    </li>`;
+            });
+            
+            userListHTML += '</ul>';
+            
+            document.getElementById('userListContent').innerHTML = userListHTML;
+            document.getElementById('userListModal').style.display = 'block';
+        }
+
+        function closeUsersList() {
+            document.getElementById('userListModal').style.display = 'none';
+        }
+
+        function deleteUser(username) {
+            if (confirm(`Are you sure you want to delete user ${username}?`)) {
+                let users = JSON.parse(localStorage.getItem('users')) || {};
+                delete users[username];
+                localStorage.setItem('users', JSON.stringify(users));
+                
+                // Remove user's votes from polls
+                let polls = JSON.parse(localStorage.getItem('polls')) || [];
+                polls.forEach(poll => {
+                    if (poll.votes && poll.votes[username]) {
+                        const votedOptionIndex = poll.votes[username];
+                        poll.options[votedOptionIndex].votes--;
+                        delete poll.votes[username];
+                    }
+                });
+                localStorage.setItem('polls', JSON.stringify(polls));
+                
+                alert(`User ${username} has been deleted.`);
+                showUsersList(); // Refresh the user list
+            }
+        }
+
+        function assignAdmin(username) {
+            if (confirm(`Are you sure you want to assign admin rights to ${username}?`)) {
+                let users = JSON.parse(localStorage.getItem('users')) || {};
+                if (users[username]) {
+                    users[username].type = 'admin';
+                    localStorage.setItem('users', JSON.stringify(users));
+                    alert(`${username} has been assigned admin rights.`);
+                    showUsersList(); // Refresh the user list
+                } else {
+                    alert(`User ${username} not found.`);
+                }
+            }
+        }
+
+        function unassignAdmin(username) {
+            if (confirm(`Are you sure you want to remove admin rights from ${username}?`)) {
+                let users = JSON.parse(localStorage.getItem('users')) || {};
+                if (users[username]) {
+                    users[username].type = 'user';
+                    localStorage.setItem('users', JSON.stringify(users));
+                    alert(`Admin rights have been removed from ${username}.`);
+                    showUsersList(); // Refresh the user list
+                } else {
+                    alert(`User ${username} not found.`);
+                }
+            }
+        }
+
+        function registerUser(username, password, type = 'user') {
+            let users = JSON.parse(localStorage.getItem('users')) || {};
+            if (!users[username]) {
+                users[username] = { 
+                    password: password, 
+                    type: type, 
+                    icon: username === 'admin' ? 'admin-icon.png' : 'default-icon.png'
+                };
+                localStorage.setItem('users', JSON.stringify(users));
+                console.log('User registered:', username, type);
+            }
+        }
+
+        function updateUserTypes() {
+            let users = JSON.parse(localStorage.getItem('users')) || {};
+            let updated = false;
+
+            for (let username in users) {
+                if (users[username].type === 'normal') {
+                    users[username].type = 'user';
+                    updated = true;
+                }
+            }
+
+            if (updated) {
+                localStorage.setItem('users', JSON.stringify(users));
+                console.log('User types updated from "normal" to "user"');
+            } else {
+                console.log('No user types needed updating');
+            }
+        }
+
+        function changeUserIcon() {
+            const input = document.createElement('input');
+            input.type = 'file';
+            input.accept = 'image/*';
+            input.onchange = e => {
+                const file = e.target.files[0];
+                const reader = new FileReader();
+                reader.onload = function(event) {
+                    const img = new Image();
+                    img.onload = function() {
+                        const canvas = document.createElement('canvas');
+                        const ctx = canvas.getContext('2d');
+                        canvas.width = 100;
+                        canvas.height = 100;
+                        ctx.drawImage(img, 0, 0, 100, 100);
+                        const resizedImage = canvas.toDataURL('image/jpeg');
+                        
+                        const loggedInUser = localStorage.getItem('loggedInUser');
+                        let users = JSON.parse(localStorage.getItem('users')) || {};
+                        if (!users[loggedInUser]) {
+                            users[loggedInUser] = {};
+                        }
+                        users[loggedInUser].icon = resizedImage;
+                        localStorage.setItem('users', JSON.stringify(users));
+                        
+                        document.getElementById('userIcon').src = resizedImage;
+                        alert('User icon updated successfully!');
+                    }
+                    img.src = event.target.result;
+                }
+                reader.readAsDataURL(file);
+            }
+            input.click();
+        }
+
+        function assignLimitedAdmin(username) {
+            if (confirm(`Are you sure you want to assign limited admin rights to ${username}?`)) {
+                let users = JSON.parse(localStorage.getItem('users')) || {};
+                if (users[username]) {
+                    users[username].type = 'limited_admin';
+                    localStorage.setItem('users', JSON.stringify(users));
+                    alert(`${username} has been assigned limited admin rights.`);
+                    showUsersList(); // Refresh the user list
+                } else {
+                    alert(`User ${username} not found.`);
+                }
+            }
+        }
+
+        window.onload = function() {
+            console.log('Window loaded');
+            updateUserTypes();
+            
+            // Ensure admin account exists with an icon
+            let users = JSON.parse(localStorage.getItem('users')) || {};
+            if (!users.admin) {
+                registerUser('admin', 'admin', 'admin');
+            } else if (!users.admin.icon) {
+                users.admin.icon = 'admin-icon.png';
+                localStorage.setItem('users', JSON.stringify(users));
+            }
+            
+            console.log('Users after initialization:', JSON.parse(localStorage.getItem('users')));
+            console.log('Polls:', JSON.parse(localStorage.getItem('polls')));
+
+            const loggedInUser = localStorage.getItem('loggedInUser');
+            if (loggedInUser) {
+                console.log('Logged in user:', loggedInUser);
+                const userType = loggedInUser === 'admin' ? 'admin' : (users[loggedInUser] ? users[loggedInUser].type : 'user');
+                showLoggedInState(loggedInUser, userType);
+            } else {
+                console.log('No user logged in');
+                showLoggedOutState();
+            }
+        }
+
+        function displayPolls() {
+            const polls = JSON.parse(localStorage.getItem('polls')) || [];
+            const pollsContainer = document.getElementById('polls');
+            pollsContainer.innerHTML = '<h2>Existing Polls</h2>';
+
+            const currentUser = localStorage.getItem('loggedInUser');
+
+            polls.forEach(poll => {
+                const pollDiv = document.createElement('div');
+                pollDiv.className = 'poll';
+                
+                let pollHtml = `
+                    <h3>${poll.name}</h3>
+                    <p>${poll.description || ''}</p>
+                    <div class="options">
+                `;
+
+                poll.options.forEach(option => {
+                    const hasVoted = option.votes && option.votes.includes(currentUser);
+                    const optionClass = hasVoted ? 'option voted' : 'option';
+                    pollHtml += `
+                        <div class="${optionClass}">
+                            <img src="${option.image}" alt="${option.text}">
+                            <p>${option.text}</p>
+                            <p>Votes: ${option.votes ? option.votes.length : 0}</p>
+                            <button onclick="vote('${poll.id}', '${option.id}')" ${hasVoted ? 'disabled' : ''}>
+                                ${hasVoted ? 'Voted' : 'Vote'}
+                            </button>
+                        </div>
+                    `;
+                });
+
+                pollHtml += `
+                    </div>
+                    <p>Ends: ${new Date(poll.endTime).toLocaleString()}</p>
+                    <button onclick="cancelVote('${poll.id}')" class="cancel-vote">Cancel Vote</button>
+                `;
+
+                pollDiv.innerHTML = pollHtml;
+                pollsContainer.appendChild(pollDiv);
+            });
+        }
+    </script>
+</body>
+</html>

@@ -1,0 +1,65 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Register - Voting System</title>
+    <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+    <div class="container">
+        <h1>Register for Voting System</h1>
+        
+        <form id="registerForm">
+            <input type="text" id="username" placeholder="Username" required>
+            <input type="password" id="password" placeholder="Password" required>
+            <input type="password" id="confirmPassword" placeholder="Confirm Password" required>
+            <input type="file" id="userIcon" accept="image/*">
+            <button type="submit">Register</button>
+        </form>
+    </div>
+
+    <script>
+        document.getElementById('registerForm').addEventListener('submit', function(e) {
+            e.preventDefault();
+            registerUser();
+        });
+
+        function registerUser() {
+            const username = document.getElementById('username').value;
+            const password = document.getElementById('password').value;
+            const confirmPassword = document.getElementById('confirmPassword').value;
+            const iconFile = document.getElementById('userIcon').files[0];
+
+            if (password !== confirmPassword) {
+                alert("Passwords do not match!");
+                return;
+            }
+
+            if (iconFile) {
+                const reader = new FileReader();
+                reader.onload = function(e) {
+                    const iconData = e.target.result;
+                    saveUser(username, password, iconData);
+                };
+                reader.readAsDataURL(iconFile);
+            } else {
+                saveUser(username, password);
+            }
+        }
+
+        function saveUser(username, password, iconData = null) {
+            let users = JSON.parse(localStorage.getItem('users')) || {};
+            if (users[username]) {
+                alert("Username already exists!");
+                return;
+            }
+
+            users[username] = { password: password, type: 'user', icon: iconData };
+            localStorage.setItem('users', JSON.stringify(users));
+            alert("Registration successful!");
+            window.location.href = 'index.html';
+        }
+    </script>
+</body>
+</html>

@@ -1,0 +1,140 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Create New Poll</title>
+    <link rel="stylesheet" href="styles.css">
+    <style>
+        .option-container {
+            margin-bottom: 10px;
+            display: flex;
+            align-items: center;
+        }
+        .preview-image {
+            max-width: 100px;
+            max-height: 100px;
+            margin-top: 5px;
+        }
+        .delete-option {
+            margin-left: 10px;
+            background-color: #ff4d4d;
+            color: white;
+            border: none;
+            padding: 5px 10px;
+            cursor: pointer;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>Create New Poll</h1>
+        <form id="createPollForm">
+            <input type="text" id="pollName" placeholder="Poll Name" required>
+            <textarea id="pollDescription" placeholder="Poll Description"></textarea>
+            <input type="datetime-local" id="pollEndTime" required>
+            <div id="optionsContainer">
+                <div class="option-container">
+                    <input type="text" class="pollOption" placeholder="Option 1" required>
+                    <input type="file" class="optionImage" accept="image/*" onchange="previewImage(this)">
+                    <img class="preview-image" style="display:none;">
+                    <button type="button" class="delete-option" onclick="deleteOption(this)">Delete</button>
+                </div>
+                <div class="option-container">
+                    <input type="text" class="pollOption" placeholder="Option 2" required>
+                    <input type="file" class="optionImage" accept="image/*" onchange="previewImage(this)">
+                    <img class="preview-image" style="display:none;">
+                    <button type="button" class="delete-option" onclick="deleteOption(this)">Delete</button>
+                </div>
+            </div>
+            <button type="button" onclick="addOption()">Add Option</button>
+            <button type="submit">Create Poll</button>
+        </form>
+        <a href="index.html" class="button">Back to Main Page</a>
+    </div>
+
+    <script>
+        function addOption() {
+            const optionsContainer = document.getElementById('optionsContainer');
+            const newOptionContainer = document.createElement('div');
+            newOptionContainer.className = 'option-container';
+            newOptionContainer.innerHTML = `
+                <input type="text" class="pollOption" placeholder="Option ${optionsContainer.children.length + 1}" required>
+                <input type="file" class="optionImage" accept="image/*" onchange="previewImage(this)">
+                <img class="preview-image" style="display:none;">
+                <button type="button" class="delete-option" onclick="deleteOption(this)">Delete</button>
+            `;
+            optionsContainer.appendChild(newOptionContainer);
+        }
+
+        function deleteOption(button) {
+            const optionsContainer = document.getElementById('optionsContainer');
+            if (optionsContainer.children.length > 2) {
+                button.parentElement.remove();
+                updateOptionPlaceholders();
+            } else {
+                alert("A poll must have at least two options.");
+            }
+        }
+
+        function updateOptionPlaceholders() {
+            const options = document.getElementsByClassName('pollOption');
+            for (let i = 0; i < options.length; i++) {
+                options[i].placeholder = `Option ${i + 1}`;
+            }
+        }
+
+        function previewImage(input) {
+            const preview = input.nextElementSibling;
+            if (input.files && input.files[0]) {
+                const reader = new FileReader();
+                reader.onload = function(e) {
+                    preview.src = e.target.result;
+                    preview.style.display = 'block';
+                }
+                reader.readAsDataURL(input.files[0]);
+            } else {
+                preview.src = '';
+                preview.style.display = 'none';
+            }
+        }
+
+        document.getElementById('createPollForm').addEventListener('submit', function(e) {
+            e.preventDefault();
+            const pollName = document.getElementById('pollName').value;
+            const pollDescription = document.getElementById('pollDescription').value;
+            const pollEndTime = document.getElementById('pollEndTime').value;
+            const optionContainers = document.getElementsByClassName('option-container');
+            const options = Array.from(optionContainers).map(container => ({
+                text: container.querySelector('.pollOption').value,
+                image: container.querySelector('.preview-image').src,
+                votes: 0
+            }));
+
+            const newPoll = {
+                id: Date.now().toString(),
+                name: pollName,
+                description: pollDescription,
+                endTime: new Date(pollEndTime).toISOString(),
+                options: options,
+                votes: {}
+            };
+
+            let polls = JSON.parse(localStorage.getItem('polls')) || [];
+            polls.push(newPoll);
+            localStorage.setItem('polls', JSON.stringify(polls));
+
+            alert('Poll created successfully!');
+            window.location.href = 'index.html';
+        });
+
+        window.onload = function() {
+            const loggedInUser = localStorage.getItem('loggedInUser');
+            if (!loggedInUser) {
+                alert('You must be logged in to create a poll.');
+                window.location.href = 'index.html';
+            }
+        }
+    </script>
+</body>
+</html>
