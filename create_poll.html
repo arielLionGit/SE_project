@@ -5,64 +5,51 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Create New Poll</title>
     <link rel="stylesheet" href="styles.css">
+    <script src="colorblind.js"></script>
     <style>
-        .option-container {
-            margin-bottom: 10px;
-            display: flex;
-            align-items: center;
-        }
-        .preview-image {
-            max-width: 100px;
-            max-height: 100px;
-            margin-top: 5px;
-        }
-        .delete-option {
-            margin-left: 10px;
-            background-color: #ff4d4d;
-            color: white;
-            border: none;
-            padding: 5px 10px;
-            cursor: pointer;
-        }
+
     </style>
 </head>
 <body>
     <div class="container">
         <h1>Create New Poll</h1>
         <form id="createPollForm">
-            <input type="text" id="pollName" placeholder="Poll Name" required>
-            <textarea id="pollDescription" placeholder="Poll Description"></textarea>
-            <input type="datetime-local" id="pollEndTime" required>
+            <input type="text" id="pollName" placeholder="Poll Name" required aria-label="Enter poll name">
+            <textarea id="pollDescription" placeholder="Poll Description" aria-label="Enter poll description"></textarea>
+            <input type="datetime-local" id="pollEndTime" required aria-label="Set poll end time">
             <div id="optionsContainer">
                 <div class="option-container">
-                    <input type="text" class="pollOption" placeholder="Option 1" required>
-                    <input type="file" class="optionImage" accept="image/*" onchange="previewImage(this)">
-                    <img class="preview-image" style="display:none;">
-                    <button type="button" class="delete-option" onclick="deleteOption(this)">Delete</button>
+                    <input type="text" class="pollOption" placeholder="Option 1" required aria-label="Enter option 1">
+                    <input type="file" class="optionImage" accept="image/*" onchange="previewImage(this)" aria-label="Upload image for option 1">
+                    <img class="preview-image" style="display:none;" alt="Preview for option 1">
+                    <button type="button" class="delete-option" onclick="deleteOption(this)" aria-label="Delete option 1">Delete</button>
                 </div>
                 <div class="option-container">
-                    <input type="text" class="pollOption" placeholder="Option 2" required>
-                    <input type="file" class="optionImage" accept="image/*" onchange="previewImage(this)">
-                    <img class="preview-image" style="display:none;">
-                    <button type="button" class="delete-option" onclick="deleteOption(this)">Delete</button>
+                    <input type="text" class="pollOption" placeholder="Option 2" required aria-label="Enter option 2">
+                    <input type="file" class="optionImage" accept="image/*" onchange="previewImage(this)" aria-label="Upload image for option 2">
+                    <img class="preview-image" style="display:none;" alt="Preview for option 2">
+                    <button type="button" class="delete-option" onclick="deleteOption(this)" aria-label="Delete option 2">Delete</button>
                 </div>
             </div>
-            <button type="button" onclick="addOption()">Add Option</button>
-            <button type="submit">Create Poll</button>
+            <button type="button" onclick="addOption()" aria-label="Add another option">Add Option</button>
+            <button type="submit" aria-label="Create the poll">Create Poll</button>
         </form>
-        <a href="index.html" class="button">Back to Main Page</a>
+        <a href="index.html" class="button" aria-label="Return to main page">Back to Main Page</a>
     </div>
+
+
 
     <script>
         function addOption() {
             const optionsContainer = document.getElementById('optionsContainer');
+            const newOptionNumber = optionsContainer.children.length + 1;
             const newOptionContainer = document.createElement('div');
             newOptionContainer.className = 'option-container';
             newOptionContainer.innerHTML = `
-                <input type="text" class="pollOption" placeholder="Option ${optionsContainer.children.length + 1}" required>
-                <input type="file" class="optionImage" accept="image/*" onchange="previewImage(this)">
-                <img class="preview-image" style="display:none;">
-                <button type="button" class="delete-option" onclick="deleteOption(this)">Delete</button>
+                <input type="text" class="pollOption" placeholder="Option ${newOptionNumber}" required aria-label="Enter option ${newOptionNumber}">
+                <input type="file" class="optionImage" accept="image/*" onchange="previewImage(this)" aria-label="Upload image for option ${newOptionNumber}">
+                <img class="preview-image" style="display:none;" alt="Preview for option ${newOptionNumber}">
+                <button type="button" class="delete-option" onclick="deleteOption(this)" aria-label="Delete option ${newOptionNumber}">Delete</button>
             `;
             optionsContainer.appendChild(newOptionContainer);
         }
