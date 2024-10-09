@@ -1,29 +1,20 @@
-Done:
-1. All the functionality is working
-(Main functions)
-- Create a poll
-- Delete a poll (Root and Admin only)
-- View a poll
-- Vote on a poll
-- Download the results of a poll
-- Admin levels
-- Manage users (Root and Admin only)
-- Change user type (Root only)
-- Delete user (Root only)
-- Automatically delete polls when reach end time (Admin can still view)
 
+
+Solved:
+1. colour blind button now default untoggled
+2. After poll end, every user can see the poll result
+
+Added:
+1. Root admin now can delete all polls by 1 button
 
 
 To be solved:
-1. The cancel vote function unavailable
-2. Still using local storage, need to figure out how to use database (Firebase suggested)
-3. Figuring out how to host the website (Have a domain name which can lend from other)
-4. Test if the AJAX auto-update can work
-5. Root admin need to be included in default setup
-6. The css in the html files should be all realocated into styles.css
+1. Still using local storage, need to figure out how to use database (Firebase suggested)
+2. Figuring out how to host the website (Lend domain/ Firebase hosting?)
+3. Test if the AJAX auto-update can work
+4. Root admin need to be included in default setup
 
 
 Additional features can add:
 1. Account security
 2. DDOS protection
-3. Enhance accessability (for colour blindness / low vision)

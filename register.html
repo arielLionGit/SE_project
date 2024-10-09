@@ -5,19 +5,21 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Register - Voting System</title>
     <link rel="stylesheet" href="styles.css">
+    <script src="colorblind.js"></script>
 </head>
 <body>
     <div class="container">
         <h1>Register for Voting System</h1>
         
         <form id="registerForm">
-            <input type="text" id="username" placeholder="Username" required>
-            <input type="password" id="password" placeholder="Password" required>
-            <input type="password" id="confirmPassword" placeholder="Confirm Password" required>
-            <input type="file" id="userIcon" accept="image/*">
-            <button type="submit">Register</button>
+            <input type="text" id="username" placeholder="Username" required aria-label="Enter your desired username">
+            <input type="password" id="password" placeholder="Password" required aria-label="Enter your password">
+            <input type="password" id="confirmPassword" placeholder="Confirm Password" required aria-label="Confirm your password">
+            <input type="file" id="userIcon" accept="image/*" aria-label="Choose a profile picture (optional)">
+            <button type="submit" aria-label="Submit registration">Register</button>
         </form>
-    </div>
+
+
 
     <script>
         document.getElementById('registerForm').addEventListener('submit', function(e) {
