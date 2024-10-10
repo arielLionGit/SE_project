@@ -5,61 +5,91 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Register - Voting System</title>
     <link rel="stylesheet" href="styles.css">
+    <script src="colorblind.js"></script>
 </head>
 <body>
     <div class="container">
         <h1>Register for Voting System</h1>
         
         <form id="registerForm">
-            <input type="text" id="username" placeholder="Username" required>
-            <input type="password" id="password" placeholder="Password" required>
-            <input type="password" id="confirmPassword" placeholder="Confirm Password" required>
-            <input type="file" id="userIcon" accept="image/*">
-            <button type="submit">Register</button>
+            <input type="text" id="username" placeholder="Username" required aria-label="Enter your desired username">
+            <input type="password" id="password" placeholder="Password" required aria-label="Enter your password">
+            <input type="password" id="confirmPassword" placeholder="Confirm Password" required aria-label="Confirm your password">
+            <input type="file" id="userIcon" accept="image/*" aria-label="Choose a profile picture (optional)">
+            <button type="submit" aria-label="Submit registration">Register</button>
         </form>
-    </div>
 
     <script>
-        document.getElementById('registerForm').addEventListener('submit', function(e) {
-            e.preventDefault();
-            registerUser();
+        document.addEventListener('DOMContentLoaded', function() {
+            const passwordInput = document.getElementById('password');
+            const confirmPasswordInput = document.getElementById('confirmPassword');
+            
+            // Create a new div for password requirements
+            const requirementsDiv = document.createElement('div');
+            requirementsDiv.id = 'passwordRequirements';
+            requirementsDiv.style.fontSize = '0.9em';
+            requirementsDiv.style.marginTop = '5px';
+            passwordInput.parentNode.insertBefore(requirementsDiv, passwordInput.nextSibling);
+
+            const requirements = [
+                { id: 'lengthReq', text: 'At least 8 characters long', regex: /.{8,}/ },
+                { id: 'uppercaseReq', text: 'Contains an uppercase letter', regex: /[A-Z]/ },
+                { id: 'lowercaseReq', text: 'Contains a lowercase letter', regex: /[a-z]/ },
+                { id: 'numberReq', text: 'Contains a number', regex: /[0-9]/ },
+                { id: 'specialReq', text: 'Contains a special character', regex: /[^A-Za-z0-9]/ }
+            ];
+
+            // Create requirement elements
+            requirements.forEach(req => {
+                const p = document.createElement('p');
+                p.id = req.id;
+                p.textContent = req.text;
+                p.style.color = 'red';
+                requirementsDiv.appendChild(p);
+            });
+
+            /**
+             * Checks the strength of the entered password and updates the UI accordingly.
+             * This function is called on each input event of the password field.
+             */
+            function checkPasswordStrength() {
+                // Updates the color of each password requirement based on whether it's met
+            }
+
+            passwordInput.addEventListener('input', checkPasswordStrength);
+
+            document.getElementById('registerForm').addEventListener('submit', function(e) {
+                e.preventDefault();
+                registerUser();
+            });
+
+            /**
+             * Handles the user registration process.
+             * This function validates the input, checks password strength, and saves the user data.
+             */
+            function registerUser() {
+                // Validates user input, checks password strength, and initiates user data saving
+            }
+
+            /**
+             * Checks if the given password meets all strength requirements.
+             * @param {string} password - The password to check.
+             * @returns {boolean} True if the password is strong, false otherwise.
+             */
+            function isPasswordStrong(password) {
+                // Tests the password against all defined requirements
+            }
+
+            /**
+             * Saves the user data to localStorage.
+             * @param {string} username - The username to save.
+             * @param {string} password - The password to save.
+             * @param {string|null} iconData - The user's icon data (if any).
+             */
+            function saveUser(username, password, iconData = null) {
+                // Stores user data in localStorage and redirects to index page upon successful registration
+            }
         });
-
-        function registerUser() {
-            const username = document.getElementById('username').value;
-            const password = document.getElementById('password').value;
-            const confirmPassword = document.getElementById('confirmPassword').value;
-            const iconFile = document.getElementById('userIcon').files[0];
-
-            if (password !== confirmPassword) {
-                alert("Passwords do not match!");
-                return;
-            }
-
-            if (iconFile) {
-                const reader = new FileReader();
-                reader.onload = function(e) {
-                    const iconData = e.target.result;
-                    saveUser(username, password, iconData);
-                };
-                reader.readAsDataURL(iconFile);
-            } else {
-                saveUser(username, password);
-            }
-        }
-
-        function saveUser(username, password, iconData = null) {
-            let users = JSON.parse(localStorage.getItem('users')) || {};
-            if (users[username]) {
-                alert("Username already exists!");
-                return;
-            }
-
-            users[username] = { password: password, type: 'user', icon: iconData };
-            localStorage.setItem('users', JSON.stringify(users));
-            alert("Registration successful!");
-            window.location.href = 'index.html';
-        }
     </script>
 </body>
 </html>

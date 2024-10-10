@@ -7,99 +7,50 @@
     <link rel="stylesheet" href="styles.css">
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/chartjs-plugin-datalabels@2.0.0"></script>
+    <script src="colorblind.js"></script>
     <style>
-        .poll-management {
-            border: 1px solid #ddd;
-            padding: 15px;
-            margin-bottom: 20px;
-            border-radius: 5px;
-        }
-        .poll-actions {
-            display: flex;
-            justify-content: space-between;
-            margin-top: 10px;
-        }
-        .action-button {
-            flex: 1;
-            margin: 0 5px;
-            padding: 10px;
-            background-color: #ff9933;
-            color: white;
-            border: none;
-            border-radius: 4px;
-            cursor: pointer;
-            font-size: 14px;
-        }
-        .action-button:first-child {
-            margin-left: 0;
-        }
-        .action-button:last-child {
-            margin-right: 0;
-        }
-        .action-button:hover {
-            background-color: #e68a00;
-        }
-        .expired-notice {
-            color: #ff0000;
-            font-weight: bold;
-        }
-        .poll-results {
-            display: flex;
-            align-items: flex-start;
-            margin-bottom: 20px;
-        }
-        .poll-options-list {
-            display: flex;
-            flex-wrap: wrap;
-            justify-content: center;
-            gap: 10px;
-            margin-bottom: 20px;
-            width: 100%;
-        }
-        .poll-option-item {
-            padding: 5px 10px;
-            border-radius: 4px;
-            color: white;
-            font-weight: bold;
-            text-shadow: 1px 1px 2px rgba(0,0,0,0.5);
-            flex: 1 1 calc(33.333% - 10px);
-            max-width: calc(33.333% - 10px);
-            box-sizing: border-box;
-            text-align: center;
-        }
-        .option-text {
-            font-size: 14px;
-        }
-        .poll-container {
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            margin-bottom: 20px;
-        }
-        .poll-chart {
-            width: 300px;
-            height: 300px;
-        }
-        .poll-actions {
-            display: flex;
-            justify-content: center;
-            gap: 10px;
-        }
-        .action-button {
-            flex: 0 1 auto;
-        }
+
     </style>
 </head>
 <body>
     <div class="container">
         <h1>Manage Polls</h1>
-        <button onclick="location.href='index.html'">Back to Main Page</button>
-        <div id="pollList"></div>
+        <div class="top-buttons">
+            <button onclick="location.href='index.html'" aria-label="Return to main page">Back to Main Page</button>
+            <button id="deleteAllPollsButton" onclick="deleteAllPolls()" style="display: none;" aria-label="Delete all polls">Delete All Polls</button>
+        </div>
+        <div id="pollList" aria-live="polite"></div>
+
+        <div id="userListModal" class="modal">
+            <div class="modal-content">
+                <span class="close">&times;</span>
+                <h2>Registered Users</h2>
+                <div id="userListContent"></div>
+            </div>
+        </div>
+    
+        <!-- ... other HTML content ... -->
+    
+        <template id="userListItemTemplate">
+            <li>
+                <span class="username"></span>
+                <span class="userType"></span>
+                <button class="delete-button">Delete</button>
+                <button class="assign-admin-button">Assign Admin</button>
+                <button class="unassign-admin-button">Unassign Admin</button>
+                <button class="assign-limited-admin-button">Assign Limited Admin</button>
+                <button class="show-sensitive-info-button">Show Sensitive Info</button>
+            </li>
+        </template>
     </div>
 
     <script>
         Chart.register(ChartDataLabels);
 
+        /**
+         * Loads and displays all polls for admin management.
+         * This function retrieves polls from localStorage, calculates vote percentages, and renders the poll management UI.
+         */
         function loadPolls() {
             const polls = JSON.parse(localStorage.getItem('polls')) || [];
             const pollList = document.getElementById('pollList');
@@ -130,20 +81,20 @@
                     <p>Ends: ${new Date(poll.endTime).toLocaleString()}</p>
                     ${isExpired ? '<p class="expired-notice">This poll has ended</p>' : ''}
                     <div class="poll-container">
-                        <div class="poll-options-list">
+                        <div class="poll-options-list" role="list" aria-label="Poll options and results">
                             ${optionsWithPercentages.map((option, index) => `
-                                <div class="poll-option-item" style="background-color: ${getColor(index)}">
+                                <div class="poll-option-item" style="background-color: ${getColor(index)}" role="listitem">
                                     <span class="option-text">${option.text}: ${option.percentage}%</span>
                                 </div>
                             `).join('')}
                         </div>
                         <div class="poll-chart">
-                            <canvas id="chart-${poll.id}" width="200" height="200"></canvas>
+                            <canvas id="chart-${poll.id}" width="200" height="200" aria-label="Pie chart of poll results" role="img"></canvas>
                         </div>
                     </div>
                     <div class="poll-actions">
-                        ${currentUserType === 'admin' ? `<button onclick="deletePoll('${poll.id}')" class="action-button">Delete Poll</button>` : ''}
-                        <button onclick="downloadChart('${poll.id}')" class="action-button">Download Chart</button>
+                        ${currentUserType === 'admin' ? `<button onclick="deletePoll('${poll.id}')" class="action-button" aria-label="Delete this poll">Delete Poll</button>` : ''}
+                        <button onclick="downloadChart('${poll.id}')" class="action-button" aria-label="Download chart image">Download Chart</button>
                     </div>
                 `;
                 pollList.appendChild(pollDiv);
@@ -153,8 +104,20 @@
             if (polls.length === 0) {
                 pollList.innerHTML = '<p>No polls available.</p>';
             }
+
+            // Show "Delete All Polls" button only for root admin
+            const deleteAllPollsButton = document.getElementById('deleteAllPollsButton');
+            if (currentUser === 'admin') {
+                deleteAllPollsButton.style.display = 'block';
+            } else {
+                deleteAllPollsButton.style.display = 'none';
+            }
         }
 
+        /**
+         * Creates and updates a pie chart for a given poll.
+         * @param {Object} poll - The poll object containing options and vote data.
+         */
         function updatePieChart(poll) {
             const ctx = document.getElementById(`chart-${poll.id}`).getContext('2d');
             
@@ -196,6 +159,10 @@
             });
         }
 
+        /**
+         * Deletes a specific poll after confirming with the admin.
+         * @param {string} pollId - The ID of the poll to be deleted.
+         */
         function deletePoll(pollId) {
             // Check user type before allowing deletion
             const currentUser = localStorage.getItem('loggedInUser');
@@ -215,6 +182,10 @@
             }
         }
 
+        /**
+         * Generates and initiates download of a chart image for a specific poll.
+         * @param {string} pollId - The ID of the poll for which to download the chart.
+         */
         function downloadChart(pollId) {
             const polls = JSON.parse(localStorage.getItem('polls')) || [];
             const poll = polls.find(p => p.id === pollId);
@@ -263,6 +234,12 @@
                 ctx.fillText(`${option.text}: ${percentage}%`, 40, yPosition);
             });
 
+            // Add accessibility information to the downloaded image
+            ctx.font = '12px Arial';
+            ctx.fillStyle = 'black';
+            ctx.textAlign = 'center';
+            ctx.fillText('This image shows a pie chart of poll results.', downloadCanvas.width / 2, downloadCanvas.height - 20);
+
             // Convert the canvas to a data URL
             const image = downloadCanvas.toDataURL('image/png');
 
@@ -275,6 +252,11 @@
             link.click();
         }
 
+        /**
+         * Returns a color from a predefined array based on the given index.
+         * @param {number} index - The index to use for color selection.
+         * @returns {string} A color in rgba format.
+         */
         function getColor(index) {
             const colors = [
                 'rgba(255, 99, 132, 0.8)',   // Red
@@ -294,6 +276,18 @@
                 'rgba(210, 105, 30, 0.8)',   // Chocolate
             ];
             return colors[index % colors.length];
+        }
+
+        /**
+         * Deletes all polls after confirming with the admin.
+         * This function clears all polls from localStorage and refreshes the poll display.
+         */
+        function deleteAllPolls() {
+            if (confirm('Are you sure you want to delete all polls? This action cannot be undone.')) {
+                localStorage.setItem('polls', JSON.stringify([]));
+                alert('All polls have been deleted.');
+                loadPolls(); // Refresh the poll display
+            }
         }
 
         window.onload = function() {

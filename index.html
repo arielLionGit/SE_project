@@ -5,271 +5,71 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Voting System</title>
     <link rel="stylesheet" href="styles.css">
+    <script src="colorblind.js"></script>
+    <script src="security.js"></script>
     <style>
 
-        
-        .modal-content {
-            background-color: #fefefe;
-            margin: 5% auto;
-            padding: 20px;
-            border: 1px solid #888;
-            width: 80%;
-            max-width: 500px;
-            border-radius: 8px;
-        }
-
-        #userList {
-            list-style-type: none;
-            padding: 0;
-            margin: 0;
-        }
-
-        #userList li {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            padding: 10px 0;
-            border-bottom: 1px solid #ddd;
-        }
-
-        #userList li:last-child {
-            border-bottom: none;
-        }
-
-        #userList li .user-info {
-            flex-grow: 1;
-        }
-
-        #userList li button {
-            background-color: #ff9933;
-            color: white;
-            border: none;
-            padding: 5px 10px;
-            border-radius: 4px;
-            cursor: pointer;
-            font-size: 14px;
-            width: auto;
-            min-width: 70px;
-            margin-left: 10px;
-        }
-
-        #userList li button:hover {
-            background-color: #e68a00;
-        }
-
-        .expired-notice {
-            color: #ff0000;
-            font-weight: bold;
-        }
-
-        #userIcon {
-            width: 50px;
-            height: 50px;
-            border-radius: 50%;
-            object-fit: cover;
-            margin-right: 10px;
-        }
-        
-        .change-icon-button {
-            background-color: #4CAF50;
-            color: white;
-            border: none;
-            padding: 5px 10px;
-            text-align: center;
-            text-decoration: none;
-            display: inline-block;
-            font-size: 14px;
-            margin: 4px 2px;
-            cursor: pointer;
-            border-radius: 4px;
-            height: 30px;
-        }
-
-        .user-icon-container {
-            display: flex;
-            align-items: center;
-            margin-bottom: 20px;  /* Increased margin for better spacing */
-        }
-
-        #userIcon {
-            width: 100px;  /* Increased from 50px */
-            height: 100px;  /* Increased from 50px */
-            border-radius: 50%;
-            object-fit: cover;
-            margin-right: 20px;  /* Increased from 10px for better spacing */
-            border: 2px solid #626262;  /* Optional: adds a border around the icon */
-        }
-        
-        .change-icon-button {
-            background-color: #4CAF50;
-            color: white;
-            border: none;
-            padding: 10px 20px;  /* Increased padding for a larger button */
-            text-align: center;
-            text-decoration: none;
-            display: inline-block;
-            font-size: 16px;  /* Increased font size */
-            margin: 4px 2px;
-            cursor: pointer;
-            border-radius: 4px;
-            height: auto;  /* Changed from fixed height to auto */
-        }
-
-        .delete-button, .assign-admin-button, .unassign-admin-button {
-            background-color: #ff9933;
-            color: white;
-            border: none;
-            padding: 5px 10px;
-            border-radius: 4px;
-            cursor: pointer;
-            font-size: 14px;
-            margin-left: 5px;
-        }
-
-        .assign-admin-button {
-            background-color: #4CAF50;
-        }
-
-        .unassign-admin-button {
-            background-color: #f44336;
-        }
-
-        .delete-button:hover {
-            background-color: #e68a00;
-        }
-
-        .assign-admin-button:hover {
-            background-color: #45a049;
-        }
-
-        .unassign-admin-button:hover {
-            background-color: #d32f2f;
-        }
-
-        .poll-option {
-            /* ... existing styles ... */
-            transition: background-color 0.3s ease;
-        }
-
-        .poll-option.voted {
-            background-color: #e6ffe6; /* Light green color */
-        }
-
-        .assign-limited-admin-button {
-            background-color: #FFA500; /* Orange */
-        }
-
-        .assign-limited-admin-button:hover {
-            background-color: #FF8C00; /* Dark Orange */
-        }
-
-        #userListModal {
-            display: none;
-            position: fixed;
-            z-index: 1;
-            left: 0;
-            top: 0;
-            width: 100%;
-            height: 100%;
-            overflow: auto;
-            background-color: rgba(0,0,0,0.4);
-        }
-
-        .modal-content {
-            background-color: #fefefe;
-            margin: 5% auto;
-            padding: 20px;
-            border: 1px solid #888;
-            width: 80%;  /* You can adjust this value */
-            max-width: 800px;  /* Increased from 500px */
-            border-radius: 8px;
-            max-height: 80vh;  /* Limit height to 80% of viewport height */
-            overflow-y: auto;  /* Add scrollbar if content exceeds max-height */
-        }
-
-        #userList {
-            list-style-type: none;
-            padding: 0;
-            margin: 0;
-        }
-
-        #userList li {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            padding: 10px 0;
-            border-bottom: 1px solid #ddd;
-        }
-
-        #userList li:last-child {
-            border-bottom: none;
-        }
-
-        
-
-        /* ... rest of the styles ... */
     </style>
 </head>
-<body onload="startTime()">
-    <div id="clock"></div>
-    <div class="container">
-        <h1>Voting System</h1>
-        
-        <div id="loginForm">
-            <h2>Hello</h2>
-            <h3>Welcome Back</h3>
-            <input type="text" id="username" placeholder="Username">
-            <input type="password" id="password" placeholder="Password">
-            <button onclick="login()">Login</button>
-            <a href="register.html" class="button">Register</a>
+<body>
+    <h1>Voting System</h1>
+    
+    <div class="color-blind-modes">
+        <button onclick="toggleColorBlindList()" aria-haspopup="true" aria-expanded="false" id="colorBlindToggle">
+            Color Blind Modes
+        </button>
+        <div id="colorBlindList">
+            <button onclick="setColorBlindMode('normal')">Normal</button>
+            <button onclick="setColorBlindMode('protanopia')">Protanopia</button>
+            <button onclick="setColorBlindMode('deuteranopia')">Deuteranopia</button>
+            <button onclick="setColorBlindMode('tritanopia')">Tritanopia</button>
+            <button onclick="setColorBlindMode('tritanomaly')">Tritanomaly</button>
+            <button onclick="setColorBlindMode('achromatopsia')">Achromatopsia</button>
         </div>
+    </div>
 
-        <div id="logoutSection" style="display: none;">
-            <div class="user-icon-container">
-                <img id="userIcon" src="" alt="User Icon">
-                <button onclick="changeUserIcon()" class="change-icon-button">Change Icon</button>
-            </div>
-            <h2>Welcome, <span id="userDisplay"></span></h2>
-            <p id="userType"></p>
-            <button onclick="logout()">Logout</button>
-            <div class="admin-buttons">
-                <button onclick="location.href='create_poll.html'" class="button">Create New Poll</button>
-                <button onclick="location.href='admin_manage_polls.html'" id="managePollsButton" class="button" style="display: none;">Manage Polls</button>
-                <button id="showUsersButton" class="button" style="display: none;" onclick="showUsersList()">Show Users List</button>
-            </div>
-        </div>
+    <div id="loginForm">
+        <h2>Hello</h2>
+        <h3>Welcome Back</h3>
+        <input type="text" id="username" placeholder="Username" aria-label="Enter your username">
+        <input type="password" id="password" placeholder="Password" aria-label="Enter your password">
+        <button onclick="login()" aria-label="Login to your account">Login</button>
+        <a href="register.html" class="button" aria-label="Go to registration page">Register</a>
+    </div>
 
-        <div id="pollList" style="display: none;">
-            <h2>Existing Polls</h2>
-            <!-- Polls will be dynamically added here -->
+    <div id="logoutSection" style="display: none;">
+        <div class="user-icon-container">
+            <img id="userIcon" src="" alt="User profile icon">
+            <button onclick="changeUserIcon()" class="change-icon-button" aria-label="Change your profile icon">Change Icon</button>
         </div>
+        <h2>Welcome, <span id="userDisplay"></span></h2>
+        <p id="userType" aria-label="Your account type"></p>
+        <button onclick="logout()" aria-label="Log out of your account">Logout</button>
+        <div class="admin-buttons">
+            <button onclick="location.href='create_poll.html'" class="button" aria-label="Create a new poll">Create New Poll</button>
+            <button onclick="location.href='admin_manage_polls.html'" id="managePollsButton" class="button" style="display: none;" aria-label="Manage existing polls">Manage Polls</button>
+            <button id="showUsersButton" class="button" style="display: none;" onclick="showUsersList()" aria-label="Show list of registered users">Show Users List</button>
+        </div>
+    </div>
+
+    <div id="pollList" style="display: none;">
+        <h2>Existing Polls</h2>
+        <!-- Polls will be dynamically added here -->
     </div>
 
     <div id="userListModal" class="modal" style="display: none;">
         <div class="modal-content">
-            <span class="close" onclick="closeUsersList()">&times;</span>
+            <span class="close" onclick="closeUsersList()" aria-label="Close users list">&times;</span>
             <h2>Registered Users</h2>
             <div id="userListContent"></div>
         </div>
     </div>
 
     <script>
-        function startTime() {
-            const today = new Date();
-            let h = today.getHours();
-            let m = today.getMinutes();
-            let s = today.getSeconds();
-            m = checkTime(m);
-            s = checkTime(s);
-            document.getElementById('clock').innerHTML =  h + ":" + m + ":" + s;
-            setTimeout(startTime, 1000);
-        }
-
-        function checkTime(i) {
-            if (i < 10) {i = "0" + i};  // add zero in front of numbers < 10
-            return i;
-        }
-
+        /**
+         * Handles the user login process.
+         * Checks credentials and sets up the logged-in state if successful.
+         */
         function login() {
             const username = document.getElementById('username').value;
             const password = document.getElementById('password').value;
@@ -284,24 +84,32 @@
 
             // Get users from localStorage
             const users = JSON.parse(localStorage.getItem('users')) || {};
+            const encryptedUsername = encryptUsername(username);
 
-            if (users[username] && users[username].password === password) {
-                localStorage.setItem('loggedInUser', username);
-                localStorage.setItem('isAdmin', users[username].type === 'admin' || users[username].type === 'limited_admin' ? 'true' : 'false');
-                showLoggedInState(username, users[username].type);
+            if (users[encryptedUsername] && users[encryptedUsername].password === encryptPassword(password)) {
+                localStorage.setItem('loggedInUser', encryptedUsername);
+                localStorage.setItem('isAdmin', users[encryptedUsername].type === 'admin' || users[encryptedUsername].type === 'limited_admin' ? 'true' : 'false');
+                showLoggedInState(username, users[encryptedUsername].type);
             } else {
                 alert('Invalid username or password');
             }
         }
 
+        /**
+         * Logs out the current user and resets the UI to the logged-out state.
+         */
         function logout() {
             localStorage.removeItem('loggedInUser');
             localStorage.removeItem('isAdmin');
             showLoggedOutState();
         }
 
+        /**
+         * Updates the UI to reflect the logged-in state for a given user.
+         * @param {string} username - The username of the logged-in user.
+         * @param {string} userType - The type of the logged-in user (e.g., 'admin', 'user').
+         */
         function showLoggedInState(username, userType) {
-            console.log('Showing logged in state for:', username, 'Type:', userType);
             document.getElementById('loginForm').style.display = 'none';
             document.getElementById('logoutSection').style.display = 'block';
             document.getElementById('pollList').style.display = 'block';
@@ -310,10 +118,11 @@
             
             const users = JSON.parse(localStorage.getItem('users')) || {};
             const userIcon = document.getElementById('userIcon');
+            const encryptedUsername = encryptUsername(username);
             if (username === 'admin') {
                 userIcon.src = users.admin && users.admin.icon ? users.admin.icon : 'admin-icon.png';
-            } else if (users[username] && users[username].icon) {
-                userIcon.src = users[username].icon;
+            } else if (users[encryptedUsername] && users[encryptedUsername].icon) {
+                userIcon.src = users[encryptedUsername].icon;
             } else {
                 userIcon.src = 'default-icon.png';
             }
@@ -329,31 +138,33 @@
             }
             
             fetchAndUpdatePolls();
-            // Start auto-updating every 5 seconds
             setInterval(fetchAndUpdatePolls, 5000);
         }
 
+        /**
+         * Updates the UI to reflect the logged-out state.
+         */
         function showLoggedOutState() {
             document.getElementById('loginForm').style.display = 'block';
             document.getElementById('logoutSection').style.display = 'none';
             document.getElementById('pollList').style.display = 'none';
         }
 
+        /**
+         * Fetches and updates the list of polls displayed to the user.
+         */
         function fetchAndUpdatePolls() {
             let polls = JSON.parse(localStorage.getItem('polls')) || [];
             const currentTime = new Date().getTime();
             const isAdmin = localStorage.getItem('isAdmin') === 'true';
-
-            if (!isAdmin) {
-                polls = polls.filter(poll => {
-                    const endTime = new Date(poll.endTime).getTime();
-                    return endTime > currentTime;
-                });
-            }
-
             updatePollDisplay(polls, isAdmin);
         }
 
+        /**
+         * Updates the display of polls based on the current data and user type.
+         * @param {Array} polls - The array of poll objects to display.
+         * @param {boolean} isAdmin - Whether the current user is an admin.
+         */
         function updatePollDisplay(polls, isAdmin) {
             const pollListDiv = document.getElementById('pollList');
             if (!pollListDiv) return;
@@ -375,37 +186,76 @@
                     const optionClass = isVoted ? 'poll-option voted' : 'poll-option';
                     return `
                         <div class="${optionClass}">
-                            ${option.image ? `<img src="${option.image}" alt="${option.text}">` : ''}
+                            ${option.image ? `<img src="${option.image}" alt="Image for option: ${option.text}">` : ''}
                             <div class="poll-option-content">
                                 <p>${truncateText(option.text, 40)}</p>
                                 <p>Votes: <span id="votes-${poll.id}-${index}">${option.votes || 0}</span></p>
                             </div>
-                            ${!isExpired ? `<button onclick="vote('${poll.id}', ${index})">${isVoted ? 'Voted' : 'Vote'}</button>` : ''}
+                            ${!isExpired ? `<button onclick="vote('${poll.id}', ${index})" aria-label="${isVoted ? 'You have voted for this option' : 'Vote for this option'}">${isVoted ? 'Voted' : 'Vote'}</button>` : ''}
                         </div>
                     `;
                 }).join('');
 
+
+                let winnerAnnouncement = '';
+                if (isExpired) {
+                    const winner = getWinner(poll);
+                    winnerAnnouncement = `<p class="winner-announcement" aria-label="Poll winner">The winner is ${winner.text}!!</p>`;
+                }
+
                 pollDiv.innerHTML = `
                     <h3>${truncateText(poll.name, 40)}</h3>
                     ${poll.description ? `<p class="poll-description">${poll.description}</p>` : ''}
-                    <div class="poll-options">${optionsHtml}</div>
+                    <div class="poll-options" role="list" aria-label="Poll options">${optionsHtml}</div>
                     <p>Ends: ${new Date(poll.endTime).toLocaleString()}</p>
-                    ${isExpired ? '<p class="expired-notice">This poll has ended</p>' : ''}
+                    ${isExpired ? '<p class="expired-notice" aria-label="Poll has ended">This poll has ended</p>' : ''}
+                    ${isExpired ? winnerAnnouncement : ''}
+                    ${!isExpired ? `<button onclick="cancelVote('${poll.id}')" class="cancel-vote-button" aria-label="Cancel your vote for this poll">Cancel Vote</button>` : ''}
                 `;
 
                 pollListDiv.appendChild(pollDiv);
             });
 
+
             if (polls.length === 0) {
-                pollListDiv.innerHTML += '<p>No active polls available.</p>';
+                pollListDiv.innerHTML += '<p>No polls available.</p>';
             }
         }
 
-        // Add this new function to truncate text
+        /**
+         * Determines the winning option for a given poll.
+         * @param {Object} poll - The poll object to analyze.
+         * @returns {Object} The winning option.
+         */
+        function getWinner(poll) {
+            let maxVotes = 0;
+            let winners = [];
+            poll.options.forEach(option => {
+                if (option.votes > maxVotes) {
+                    maxVotes = option.votes;
+                    winners = [option];
+                } else if (option.votes === maxVotes) {
+                    winners.push(option);
+                }
+            });
+            return winners[Math.floor(Math.random() * winners.length)];
+        }
+
+        /**
+         * Truncates text to a specified length, adding an ellipsis if necessary.
+         * @param {string} text - The text to truncate.
+         * @param {number} maxLength - The maximum length of the truncated text.
+         * @returns {string} The truncated text.
+         */
         function truncateText(text, maxLength) {
             return text.length > maxLength ? text.substring(0, maxLength - 3) + '...' : text;
         }
 
+        /**
+         * Records a user's vote for a specific option in a poll.
+         * @param {string} pollId - The ID of the poll being voted on.
+         * @param {number} optionIndex - The index of the option being voted for.
+         */
         function vote(pollId, optionIndex) {
             const loggedInUser = localStorage.getItem('loggedInUser');
             if (!loggedInUser) {
@@ -432,73 +282,72 @@
                 localStorage.setItem('polls', JSON.stringify(polls));
                 
                 alert(previousVote !== undefined ? 'Your vote has been changed.' : 'Your vote has been recorded.');
-                fetchAndUpdatePolls(); // Update immediately after voting
+                fetchAndUpdatePolls();
             }
         }
 
+        /**
+         * Displays a list of all registered users (admin function).
+         */
         function showUsersList() {
             const users = JSON.parse(localStorage.getItem('users')) || {};
             const currentUser = localStorage.getItem('loggedInUser');
-            const currentUserType = users[currentUser].type;
+            const currentUserType = users[currentUser] ? users[currentUser].type : 'user';
             let userListHTML = '<ul id="userList">';
             
-            // Separate users into admins and regular users
             let adminUsers = [];
             let limitedAdminUsers = [];
             let regularUsers = [];
             
-            for (let username in users) {
-                if (username === 'admin' || users[username].type === 'admin') {
-                    adminUsers.push(username);
-                } else if (users[username].type === 'limited_admin') {
-                    limitedAdminUsers.push(username);
+            for (let encryptedUsername in users) {
+                const decryptedUsername = decryptUsername(encryptedUsername);
+                if (encryptedUsername === 'admin' || users[encryptedUsername].type === 'admin') {
+                    adminUsers.push({encrypted: encryptedUsername, decrypted: decryptedUsername});
+                } else if (users[encryptedUsername].type === 'limited_admin') {
+                    limitedAdminUsers.push({encrypted: encryptedUsername, decrypted: decryptedUsername});
                 } else {
-                    regularUsers.push(username);
+                    regularUsers.push({encrypted: encryptedUsername, decrypted: decryptedUsername});
                 }
             }
             
-            // Sort admin users alphabetically, but keep 'admin' at the top
             adminUsers.sort((a, b) => {
-                if (a === 'admin') return -1;
-                if (b === 'admin') return 1;
-                return a.localeCompare(b);
+                if (a.encrypted === 'admin') return -1;
+                if (b.encrypted === 'admin') return 1;
+                return a.decrypted.localeCompare(b.decrypted);
             });
             
-            // Add admin users
-            adminUsers.forEach(username => {
-                const adminType = username === 'admin' ? 'Root Admin' : 'Admin';
+            adminUsers.forEach(user => {
+                const adminType = user.encrypted === 'admin' ? 'Root Admin' : 'Admin';
                 userListHTML += `
                     <li>
-                        <span class="user-info">${username} (${adminType})</span>
-                        ${username !== 'admin' && currentUserType === 'admin' ? `
-                            <button onclick="deleteUser('${username}')" class="delete-button">Delete</button>
-                            <button onclick="unassignAdmin('${username}')" class="unassign-admin-button">Unassign Admin</button>
+                        <span class="user-info">${user.decrypted} (${adminType})</span>
+                        ${user.encrypted !== 'admin' && currentUserType === 'admin' ? `
+                            <button onclick="deleteUser('${user.encrypted}')" class="delete-button" aria-label="Delete user ${user.decrypted}">Delete</button>
+                            <button onclick="unassignAdmin('${user.encrypted}')" class="unassign-admin-button" aria-label="Remove admin rights from ${user.decrypted}">Unassign Admin</button>
                         ` : ''}
                     </li>`;
             });
             
-            // Add limited admin users
-            limitedAdminUsers.forEach(username => {
+            limitedAdminUsers.forEach(user => {
                 userListHTML += `
                     <li>
-                        <span class="user-info">${username} (Limited Admin)</span>
+                        <span class="user-info">${user.decrypted} (Limited Admin)</span>
                         ${currentUserType === 'admin' ? `
-                            <button onclick="deleteUser('${username}')" class="delete-button">Delete</button>
-                            <button onclick="unassignAdmin('${username}')" class="unassign-admin-button">Unassign Admin</button>
+                            <button onclick="deleteUser('${user.encrypted}')" class="delete-button" aria-label="Delete user ${user.decrypted}">Delete</button>
+                            <button onclick="unassignAdmin('${user.encrypted}')" class="unassign-admin-button" aria-label="Remove admin rights from ${user.decrypted}">Unassign Admin</button>
                         ` : ''}
                     </li>`;
             });
             
-            // Add regular users
-            regularUsers.sort((a, b) => a.localeCompare(b));
-            regularUsers.forEach(username => {
+            regularUsers.sort((a, b) => a.decrypted.localeCompare(b.decrypted));
+            regularUsers.forEach(user => {
                 userListHTML += `
                     <li>
-                        <span class="user-info">${username} (User)</span>
+                        <span class="user-info">${user.decrypted} (User)</span>
                         ${currentUserType === 'admin' ? `
-                            <button onclick="deleteUser('${username}')" class="delete-button">Delete</button>
-                            <button onclick="assignAdmin('${username}')" class="assign-admin-button">Assign Admin</button>
-                            <button onclick="assignLimitedAdmin('${username}')" class="assign-limited-admin-button">Assign Limited Admin</button>
+                            <button onclick="deleteUser('${user.encrypted}')" class="delete-button" aria-label="Delete user ${user.decrypted}">Delete</button>
+                            <button onclick="assignAdmin('${user.encrypted}')" class="assign-admin-button" aria-label="Assign admin rights to ${user.decrypted}">Assign Admin</button>
+                            <button onclick="assignLimitedAdmin('${user.encrypted}')" class="assign-limited-admin-button" aria-label="Assign limited admin rights to ${user.decrypted}">Assign Limited Admin</button>
                         ` : ''}
                     </li>`;
             });
@@ -509,92 +358,168 @@
             document.getElementById('userListModal').style.display = 'block';
         }
 
+        /**
+         * Closes the modal displaying the list of users.
+         */
         function closeUsersList() {
             document.getElementById('userListModal').style.display = 'none';
         }
 
-        function deleteUser(username) {
-            if (confirm(`Are you sure you want to delete user ${username}?`)) {
+        /**
+         * Deletes a user from the system (admin function).
+         * @param {string} encryptedUsername - The encrypted username of the user to delete.
+         */
+        function deleteUser(encryptedUsername) {
+            const decryptedUsername = decryptUsername(encryptedUsername);
+            if (confirm(`Are you sure you want to delete user ${decryptedUsername}?`)) {
                 let users = JSON.parse(localStorage.getItem('users')) || {};
-                delete users[username];
+                delete users[encryptedUsername];
                 localStorage.setItem('users', JSON.stringify(users));
                 
-                // Remove user's votes from polls
                 let polls = JSON.parse(localStorage.getItem('polls')) || [];
                 polls.forEach(poll => {
-                    if (poll.votes && poll.votes[username]) {
-                        const votedOptionIndex = poll.votes[username];
+                    if (poll.votes && poll.votes[encryptedUsername]) {
+                        const votedOptionIndex = poll.votes[encryptedUsername];
                         poll.options[votedOptionIndex].votes--;
-                        delete poll.votes[username];
+                        delete poll.votes[encryptedUsername];
                     }
                 });
                 localStorage.setItem('polls', JSON.stringify(polls));
                 
-                alert(`User ${username} has been deleted.`);
-                showUsersList(); // Refresh the user list
+                alert(`User ${decryptedUsername} has been deleted.`);
+                showUsersList();
             }
         }
 
-        function assignAdmin(username) {
-            if (confirm(`Are you sure you want to assign admin rights to ${username}?`)) {
+        /**
+         * Assigns admin rights to a user (admin function).
+         * @param {string} encryptedUsername - The encrypted username of the user to promote.
+         */
+        function assignAdmin(encryptedUsername) {
+            const decryptedUsername = decryptUsername(encryptedUsername);
+            if (confirm(`Are you sure you want to assign admin rights to ${decryptedUsername}?`)) {
                 let users = JSON.parse(localStorage.getItem('users')) || {};
-                if (users[username]) {
-                    users[username].type = 'admin';
+                if (users[encryptedUsername]) {
+                    users[encryptedUsername].type = 'admin';
                     localStorage.setItem('users', JSON.stringify(users));
-                    alert(`${username} has been assigned admin rights.`);
-                    showUsersList(); // Refresh the user list
+                    alert(`${decryptedUsername} has been assigned admin rights.`);
+                    showUsersList();
                 } else {
-                    alert(`User ${username} not found.`);
+                    alert(`User ${decryptedUsername} not found.`);
                 }
             }
         }
 
-        function unassignAdmin(username) {
-            if (confirm(`Are you sure you want to remove admin rights from ${username}?`)) {
+        /**
+         * Removes admin rights from a user (admin function).
+         * @param {string} encryptedUsername - The encrypted username of the admin to demote.
+         */
+        function unassignAdmin(encryptedUsername) {
+            const decryptedUsername = decryptUsername(encryptedUsername);
+            if (confirm(`Are you sure you want to remove admin rights from ${decryptedUsername}?`)) {
                 let users = JSON.parse(localStorage.getItem('users')) || {};
-                if (users[username]) {
-                    users[username].type = 'user';
+                if (users[encryptedUsername]) {
+                    users[encryptedUsername].type = 'user';
                     localStorage.setItem('users', JSON.stringify(users));
-                    alert(`Admin rights have been removed from ${username}.`);
-                    showUsersList(); // Refresh the user list
+                    alert(`Admin rights have been removed from ${decryptedUsername}.`);
+                    showUsersList();
                 } else {
-                    alert(`User ${username} not found.`);
+                    alert(`User ${decryptedUsername} not found.`);
                 }
             }
         }
 
-        function registerUser(username, password, type = 'user') {
-            let users = JSON.parse(localStorage.getItem('users')) || {};
-            if (!users[username]) {
-                users[username] = { 
-                    password: password, 
-                    type: type, 
-                    icon: username === 'admin' ? 'admin-icon.png' : 'default-icon.png'
-                };
-                localStorage.setItem('users', JSON.stringify(users));
-                console.log('User registered:', username, type);
+        /**
+         * Assigns limited admin rights to a user (admin function).
+         * @param {string} encryptedUsername - The encrypted username of the user to promote.
+         */
+        function assignLimitedAdmin(encryptedUsername) {
+            const decryptedUsername = decryptUsername(encryptedUsername);
+            if (confirm(`Are you sure you want to assign limited admin rights to ${decryptedUsername}?`)) {
+                let users = JSON.parse(localStorage.getItem('users')) || {};
+                if (users[encryptedUsername]) {
+                    users[encryptedUsername].type = 'limited_admin';
+                    localStorage.setItem('users', JSON.stringify(users));
+                    alert(`${decryptedUsername} has been assigned limited admin rights.`);
+                    showUsersList();
+                } else {
+                    alert(`User ${decryptedUsername} not found.`);
+                }
             }
         }
 
-        function updateUserTypes() {
-            let users = JSON.parse(localStorage.getItem('users')) || {};
-            let updated = false;
-
-            for (let username in users) {
-                if (users[username].type === 'normal') {
-                    users[username].type = 'user';
-                    updated = true;
-                }
+        /**
+         * Cancels a user's vote on a specific poll.
+         * @param {string} pollId - The ID of the poll to cancel the vote for.
+         */
+        function cancelVote(pollId) {
+            const loggedInUser = localStorage.getItem('loggedInUser');
+            if (!loggedInUser) {
+                alert('Please log in to cancel your vote.');
+                return;
             }
 
-            if (updated) {
-                localStorage.setItem('users', JSON.stringify(users));
-                console.log('User types updated from "normal" to "user"');
+            let polls = JSON.parse(localStorage.getItem('polls')) || [];
+            const pollIndex = polls.findIndex(poll => poll.id === pollId);
+
+            if (pollIndex !== -1) {
+                if (polls[pollIndex].votes && polls[pollIndex].votes[loggedInUser] !== undefined) {
+                    const previousVote = polls[pollIndex].votes[loggedInUser];
+                    polls[pollIndex].options[previousVote].votes = Math.max(0, (polls[pollIndex].options[previousVote].votes || 0) - 1);
+                    delete polls[pollIndex].votes[loggedInUser];
+
+                    localStorage.setItem('polls', JSON.stringify(polls));
+                    alert('Your vote has been cancelled.');
+                    fetchAndUpdatePolls();
+                } else {
+                    alert('You haven\'t voted in this poll yet.');
+                }
+            }
+        }
+
+        /**
+         * Sets the color blind mode for the application.
+         * @param {string} mode - The color blind mode to set.
+         */
+        function setColorBlindMode(mode) {
+            document.body.className = 'color-blind-' + mode;
+            localStorage.setItem('colorBlindMode', mode);
+            hideColorBlindList();
+        }
+
+        /**
+         * Toggles the visibility of the color blind mode selection list.
+         */
+        function toggleColorBlindList() {
+            const list = document.getElementById('colorBlindList');
+            const toggle = document.getElementById('colorBlindToggle');
+            if (list.style.display === 'none' || list.style.display === '') {
+                list.style.display = 'block';
+                toggle.setAttribute('aria-expanded', 'true');
             } else {
-                console.log('No user types needed updating');
+                hideColorBlindList();
             }
         }
 
+        /**
+         * Hides the color blind mode selection list.
+         */
+        function hideColorBlindList() {
+            const list = document.getElementById('colorBlindList');
+            const toggle = document.getElementById('colorBlindToggle');
+            list.style.display = 'none';
+            toggle.setAttribute('aria-expanded', 'false');
+        }
+
+        window.onclick = function(event) {
+            if (!event.target.matches('#colorBlindToggle')) {
+                hideColorBlindList();
+            }
+        }
+
+        /**
+         * Allows the user to change their profile icon.
+         */
         function changeUserIcon() {
             const input = document.createElement('input');
             input.type = 'file';
@@ -630,89 +555,86 @@
             input.click();
         }
 
-        function assignLimitedAdmin(username) {
-            if (confirm(`Are you sure you want to assign limited admin rights to ${username}?`)) {
-                let users = JSON.parse(localStorage.getItem('users')) || {};
-                if (users[username]) {
-                    users[username].type = 'limited_admin';
-                    localStorage.setItem('users', JSON.stringify(users));
-                    alert(`${username} has been assigned limited admin rights.`);
-                    showUsersList(); // Refresh the user list
-                } else {
-                    alert(`User ${username} not found.`);
-                }
+        /**
+         * Encrypts a username (placeholder function).
+         * @param {string} username - The username to encrypt.
+         * @returns {string} The encrypted username.
+         */
+        function encryptUsername(username) {
+            // This is a placeholder function. In a real-world scenario, you'd use proper encryption.
+            return username; // For now, we're not actually encrypting
+        }
+
+        /**
+         * Decrypts an encrypted username.
+         * @param {string} encryptedUsername - The encrypted username to decrypt.
+         * @returns {string} The decrypted username.
+         */
+        function decryptUsername(encryptedUsername) {
+            const users = JSON.parse(localStorage.getItem('users')) || {};
+            if (users[encryptedUsername] && users[encryptedUsername].originalUsername) {
+                return users[encryptedUsername].originalUsername;
             }
+            // Fallback to displaying part of the encrypted username if original is not found
+            return encryptedUsername;
+        }
+
+        /**
+         * Encrypts a password (placeholder function).
+         * @param {string} password - The password to encrypt.
+         * @returns {string} The encrypted password.
+         */
+        function encryptPassword(password) {
+            // This is a placeholder function. In a real-world scenario, you'd use proper encryption.
+            return password; // For now, we're not actually encrypting
         }
 
         window.onload = function() {
-            console.log('Window loaded');
-            updateUserTypes();
-            
-            // Ensure admin account exists with an icon
-            let users = JSON.parse(localStorage.getItem('users')) || {};
-            if (!users.admin) {
-                registerUser('admin', 'admin', 'admin');
-            } else if (!users.admin.icon) {
-                users.admin.icon = 'admin-icon.png';
-                localStorage.setItem('users', JSON.stringify(users));
+            const savedMode = localStorage.getItem('colorBlindMode');
+            if (savedMode) {
+                setColorBlindMode(savedMode);
             }
-            
-            console.log('Users after initialization:', JSON.parse(localStorage.getItem('users')));
-            console.log('Polls:', JSON.parse(localStorage.getItem('polls')));
 
             const loggedInUser = localStorage.getItem('loggedInUser');
             if (loggedInUser) {
-                console.log('Logged in user:', loggedInUser);
+                const users = JSON.parse(localStorage.getItem('users')) || {};
                 const userType = loggedInUser === 'admin' ? 'admin' : (users[loggedInUser] ? users[loggedInUser].type : 'user');
-                showLoggedInState(loggedInUser, userType);
+                showLoggedInState(decryptUsername(loggedInUser), userType);
             } else {
-                console.log('No user logged in');
                 showLoggedOutState();
             }
         }
 
-        function displayPolls() {
-            const polls = JSON.parse(localStorage.getItem('polls')) || [];
-            const pollsContainer = document.getElementById('polls');
-            pollsContainer.innerHTML = '<h2>Existing Polls</h2>';
 
-            const currentUser = localStorage.getItem('loggedInUser');
-
-            polls.forEach(poll => {
-                const pollDiv = document.createElement('div');
-                pollDiv.className = 'poll';
-                
-                let pollHtml = `
-                    <h3>${poll.name}</h3>
-                    <p>${poll.description || ''}</p>
-                    <div class="options">
-                `;
-
-                poll.options.forEach(option => {
-                    const hasVoted = option.votes && option.votes.includes(currentUser);
-                    const optionClass = hasVoted ? 'option voted' : 'option';
-                    pollHtml += `
-                        <div class="${optionClass}">
-                            <img src="${option.image}" alt="${option.text}">
-                            <p>${option.text}</p>
-                            <p>Votes: ${option.votes ? option.votes.length : 0}</p>
-                            <button onclick="vote('${poll.id}', '${option.id}')" ${hasVoted ? 'disabled' : ''}>
-                                ${hasVoted ? 'Voted' : 'Vote'}
-                            </button>
-                        </div>
-                    `;
-                });
-
-                pollHtml += `
-                    </div>
-                    <p>Ends: ${new Date(poll.endTime).toLocaleString()}</p>
-                    <button onclick="cancelVote('${poll.id}')" class="cancel-vote">Cancel Vote</button>
-                `;
-
-                pollDiv.innerHTML = pollHtml;
-                pollsContainer.appendChild(pollDiv);
-            });
-        }
     </script>
+
+
+
+
+
+<script type="module">
+    // Import the functions you need from the SDKs you need
+    import { initializeApp } from "https://www.gstatic.com/firebasejs/10.14.0/firebase-app.js";
+    // TODO: Add SDKs for Firebase products that you want to use
+    // https://firebase.google.com/docs/web/setup#available-libraries
+  
+    // Your web app's Firebase configuration
+    const firebaseConfig = {
+      apiKey: "AIzaSyB50tmJ19NYMkC9uxldDz1HcI72SbYo55w",
+      authDomain: "se-fun.firebaseapp.com",
+      projectId: "se-fun",
+      storageBucket: "se-fun.appspot.com",
+      messagingSenderId: "409521764544",
+      appId: "1:409521764544:web:06c0e2da2f526821709525"
+    };
+  
+    // Initialize Firebase
+    const app = initializeApp(firebaseConfig);
+  </script>
+
+
+
+
+
 </body>
 </html>
